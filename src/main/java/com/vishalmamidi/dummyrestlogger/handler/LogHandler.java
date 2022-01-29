@@ -15,13 +15,13 @@ public class LogHandler {
         log.info("logging: {}", request);
         return ServerResponse.status(HttpStatus.ACCEPTED)
                 .contentType(APPLICATION_JSON)
-                .body(Mono.empty(), String.class);
+                .body(Mono.just(java.time.LocalDateTime.now().toString()), String.class);
     }
     public Mono<ServerResponse> saveLog(ServerRequest request) {
         log.info("saved: {}", request);
         return ServerResponse.status(HttpStatus.CREATED)
                 .contentType(APPLICATION_JSON)
-                .body(Mono.empty(), String.class);
+                .body(Mono.just(java.time.LocalDateTime.now().toString()), String.class);
     }
 }
 

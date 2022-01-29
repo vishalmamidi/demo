@@ -15,6 +15,7 @@ public class LogRouter {
     @Bean
     RouterFunction<ServerResponse> routes(LogHandler handler) {
         return route()
+                .GET("/", handler::justLog)
                 .GET("/log", handler::justLog)
                 .POST("/save", contentType(APPLICATION_JSON), handler::saveLog)
                 .build();
