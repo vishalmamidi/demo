@@ -1,4 +1,4 @@
-package com.vishalmamidi.dummyrestlogger;
+package com.vishalmamidi.demorestlogger;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

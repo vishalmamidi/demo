@@ -1,13 +1,13 @@
-package com.vishalmamidi.dummyrestlogger;
+package com.vishalmamidi.demorestlogger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DummyRestLoggerApplication {
+public class DemoRestLoggerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DummyRestLoggerApplication.class, args);
+		SpringApplication.run(DemoRestLoggerApplication.class, args);
 	}
 
 }

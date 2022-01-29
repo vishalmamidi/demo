@@ -1,4 +1,4 @@
-package com.vishalmamidi.dummyrestlogger.handler;
+package com.vishalmamidi.demorestlogger.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
