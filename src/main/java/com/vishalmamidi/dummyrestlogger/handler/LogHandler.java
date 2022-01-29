@@ -10,7 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 @Slf4j
-public class logHandler {
+public class LogHandler {
     public Mono<ServerResponse> justLog(ServerRequest request) {
         log.info("logging: {}", request);
         return ServerResponse.status(HttpStatus.ACCEPTED)

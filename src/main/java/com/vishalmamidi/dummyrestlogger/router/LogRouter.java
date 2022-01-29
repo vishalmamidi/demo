@@ -1,6 +1,6 @@
 package com.vishalmamidi.dummyrestlogger.router;
 
-import com.vishalmamidi.dummyrestlogger.handler.logHandler;
+import com.vishalmamidi.dummyrestlogger.handler.LogHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -13,9 +13,9 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class LogRouter {
     @Bean
-    RouterFunction<ServerResponse> routes(logHandler handler) {
+    RouterFunction<ServerResponse> routes(LogHandler handler) {
         return route()
-                .GET("/log", contentType(APPLICATION_JSON), handler::justLog)
+                .GET("/log", handler::justLog)
                 .POST("/save", contentType(APPLICATION_JSON), handler::saveLog)
                 .build();
     }

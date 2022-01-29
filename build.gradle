@@ -22,7 +22,8 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.5'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-webflux-ui', version: '1.6.5'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-webflux-core', version: '1.6.5'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
