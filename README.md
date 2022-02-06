@@ -26,6 +26,13 @@ docker images
 ```
 sudo docker tag demo-rest vishalmamidi/demo-rest
 ```
+or 
+
+## build and tag
+```
+docker build -t vishalmamidi/demo-rest .
+```
+
 ## push tagged container image
 ```
 sudo docker push vishalmamidi/demo-rest
