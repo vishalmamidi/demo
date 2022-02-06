@@ -18,7 +18,7 @@ spec:
         app: demo-rest
     spec:
       containers:
-      - image: vishalmamidi/demo-rest
+      - image: vishalmamidi/demo-rest:latest
         name: demo-rest
         resources: {}
 status: {}
