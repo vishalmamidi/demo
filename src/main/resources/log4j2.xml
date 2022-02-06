@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="appName">${sys:spring.application.name}</Property>
+        <Property name="logPath">${sys:my-log.path}</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- normal pattern -->
+            <!-- <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
+            <!-- normal pattern -->
+            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+        </Console>
+        <RollingFile
+                name="rollingFile"
+                fileName="${logPath}/${appName}/${appName}.log"
+                filePattern="${logPath}/${appName}/${appName}-%i.log"
+                ignoreExceptions="false">
+            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <SizeBasedTriggeringPolicy size="10 MB" />
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="rollingFile" />
+        </Root>
+    </Loggers>
+</Configuration>

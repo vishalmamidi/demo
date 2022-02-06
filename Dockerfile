@@ -4,8 +4,6 @@ FROM gradle:7.3.3-jdk11 AS builder
 
 COPY --chown=gradle:gradle . .
 
-#RUN gradle build
-
 EXPOSE 8080
 
 WORKDIR /app
