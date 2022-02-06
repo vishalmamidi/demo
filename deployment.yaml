@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: demo-rest
+  name: demo-rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-rest
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: demo-rest
+    spec:
+      containers:
+      - image: vishalmamidi/demo-rest
+        name: demo-rest
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: demo-rest
+  name: demo-rest
+spec:
+  ports:
+  - name: 8080-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: demo-rest
+  type: ClusterIP
+status:
+  loadBalancer: {}
