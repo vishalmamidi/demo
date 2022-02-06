@@ -15,4 +15,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag vishalmamidi/demo-rest:$(date +%s)
+      run: gradle clean build
+#       run: docker build . --file Dockerfile --tag vishalmamidi/demo-rest:$(date +%s)
