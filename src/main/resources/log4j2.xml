@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="appName">${sys:spring.application.name}</Property>
-        <Property name="logPath">${sys:my-log.path}</Property>
+        <Property name="appName">demo-rest</Property>
+        <Property name="logPath">var/log/</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <!-- normal pattern -->
             <!-- <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
             <!-- normal pattern -->
-            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json">
+                <EventTemplateAdditionalField key="application_name" value="${appName}"/>
+            </JsonTemplateLayout>
         </Console>
         <RollingFile
                 name="rollingFile"
