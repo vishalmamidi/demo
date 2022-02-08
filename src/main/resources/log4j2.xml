@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="appName">${sys:spring.application.name}</Property>
-        <Property name="logPath">${sys:my-log.path}</Property>
+        <Property name="appName">demo-logger</Property>
+        <Property name="logPath">var/log/</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
