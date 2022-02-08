@@ -1,5 +1,6 @@
 package com.vishalmamidi.demorestlogger.router;
 
+import com.vishalmamidi.demorestlogger.handler.LogDumpHandler;
 import com.vishalmamidi.demorestlogger.handler.LogHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +14,14 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class LogRouter {
     @Bean
-    RouterFunction<ServerResponse> routes(LogHandler handler) {
+    RouterFunction<ServerResponse> routes(LogHandler handler, LogDumpHandler handler2) {
         return route()
                 .GET("/", handler::justLog)
                 .GET("/hello", handler::justLog)
                 .GET("/log", handler::justLog)
                 .POST("/save", contentType(APPLICATION_JSON), handler::saveLog)
+                .POST("/dump", handler2::justLog)
+                .POST("/post", handler2::justLog)
                 .build();
     }
 }
