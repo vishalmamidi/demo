@@ -7,9 +7,9 @@
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <!-- normal pattern -->
-            <!-- <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
-            <!-- normal pattern -->
-            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <!-- <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %logger{36} [%t] [event: 1234567899 ]: %msg%n"/>-->
+            <!-- json pattern -->
+             <JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
         </Console>
         <RollingFile
                 name="rollingFile"
