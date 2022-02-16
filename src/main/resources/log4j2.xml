@@ -9,7 +9,7 @@
             <!-- normal pattern -->
             <!-- <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
             <!-- normal pattern -->
-            <JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json">
+            <JsonTemplateLayout eventTemplateUri="classpath:JsonTemplateLayout.json">
                 <EventTemplateAdditionalField key="service_name" value="${appName}"/>
             </JsonTemplateLayout>
             <MarkerFilter marker="vishal" onMatch="DENY" onMismatch="ACCEPT"/>
@@ -26,7 +26,9 @@
                 fileName="${logPath}/${appName}/${appName}.log"
                 filePattern="${logPath}/${appName}/${appName}-%i.log"
                 ignoreExceptions="false">
-            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <JsonTemplateLayout eventTemplateUri="classpath:JsonTemplateLayout.json">
+                <EventTemplateAdditionalField key="service_name" value="${appName}"/>
+            </JsonTemplateLayout>
             <SizeBasedTriggeringPolicy size="10 MB" />
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
