@@ -1,8 +1,4 @@
-
-
-FROM gradle:7.3.3-jdk11 AS builder
-
-COPY --chown=gradle:gradle . .
+FROM openjdk:17-jdk-alpine
 
 EXPOSE 8080
 
