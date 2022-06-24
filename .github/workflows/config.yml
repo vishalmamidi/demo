@@ -28,17 +28,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@master
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build with Gradle
+        env:
+          mongodb_host: localhost
         run: ./gradlew build
     
 
-      - name: Build and push Docker image
+      - name: push Docker image
         uses: docker/build-push-action@master
         with:
           context: .
