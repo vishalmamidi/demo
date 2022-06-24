@@ -31,7 +31,9 @@ jobs:
       - name: Build with Gradle
         env:
           mongodb_host: localhost
-        run: ./gradlew build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
     
 
       - name: push Docker image
