@@ -28,8 +28,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
