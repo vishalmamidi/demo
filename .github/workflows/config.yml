@@ -44,4 +44,3 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          labels: vishal
