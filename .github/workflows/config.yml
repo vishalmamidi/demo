@@ -7,9 +7,11 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  CI: true
 
 jobs:
-  build:
+  build-jar:
+    name: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,13 +20,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@master
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up OpenJDK 17
         uses: actions/setup-java@v3
@@ -39,20 +36,34 @@ jobs:
       - name: Build with Gradle
         env:
           mongodb_host: localhost
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
 
-      - name: Extract metadata (tags, labels) for registry
-        id: meta
-        uses: docker/metadata-action@master
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-      - name: push image to Container registry
-        uses: docker/build-push-action@master
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+  CI:
+    name: push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build-jar
+    steps:
+    - name: Log in to the Container registry
+      uses: docker/login-action@master
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for registry
+      id: meta
+      uses: docker/metadata-action@master
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=raw,value=latest
+    - name: push image to Container registry
+      uses: docker/build-push-action@master
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
