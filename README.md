@@ -4,7 +4,7 @@
 # Run Azure CLI
 
 ```
-docker run -it --rm --entrypoint /bin/sh mcr.microsoft.com/azure-cli:2.9.1
+docker run -it --rm --entrypoint /bin/sh mcr.microsoft.com/azure-cli:latest
 ```
 
 # Login to Azure
