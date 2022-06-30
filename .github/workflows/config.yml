@@ -1,19 +1,19 @@
-# This workflow will build a Java project with Gradle and push to GHCR..
-name: build and push image to ghcr
+# This workflow will build a Java project with Gradle and push to GitHub container registry ..
+name: build and push image to github container registry
 
 on:
   push:
-    branches: [ main ]
-    
+    branches: [ azure-aks ]
+
   #Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-jar:
+  build-and-push-image:
     name: build
     runs-on: ubuntu-latest
     permissions:
@@ -41,13 +41,6 @@ jobs:
           mongodb_host: localhost
         run: ./gradlew build
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@master
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract metadata (tags, labels) for registry
         id: meta
         uses: docker/metadata-action@master
@@ -55,6 +48,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
+      - name: Log in to the Container registry
+        uses: docker/login-action@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: push image to Container registry
         uses: docker/build-push-action@master
         with:
