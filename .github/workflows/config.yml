@@ -1,20 +1,74 @@
-# This workflow will build a Java project with Gradle and push to GHCR..
-name: build and push image to ghcr
+# This workflow will build a Java project with Gradle and push to GitHub container registry ..
+name: build and push image to github container registry
 
 on:
   push:
-    branches: [ main ]
-    
+    branches: [ azure-aks ]
+
   #Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  CLUSTER_NAME: demo-aks
+  CLUSTER_RESOURCE_GROUP: my_group
+
+# jobs:
+#   build-and-push-image:
+#     name: build
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+#       - name: Set up OpenJDK 17
+#         uses: actions/setup-java@v3.4.0
+#         with:
+#           java-version: 17
+#           distribution: 'microsoft'
+#           cache: gradle
+
+#       - name: make gradlew executable
+#         run: chmod +x gradlew
+
+#       - name: Build with Gradle
+#         env:
+#           mongodb_host: localhost
+#         run: ./gradlew build
+
+#       - name: Extract metadata (tags, labels) for registry
+#         id: meta
+#         uses: docker/metadata-action@master
+#         with:
+#           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#           tags: |
+#             type=raw,value=latest
+#       - name: Log in to the Container registry
+#         uses: docker/login-action@master
+#         with:
+#           registry: ${{ env.REGISTRY }}
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}
+
+#       - name: push image to Container registry
+#         uses: docker/build-push-action@master
+#         with:
+#           context: .
+#           push: true
+#           tags: ${{ steps.meta.outputs.tags }}
 
 jobs:
-  build-jar:
-    name: build
+  deployment:
+    name: deployment
+#     needs:
+#       - build-and-push-image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,38 +80,15 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Set up OpenJDK 17
-        uses: actions/setup-java@v3.4.0
+      
+      - name: Set the target Azure Kubernetes Service (AKS) cluster. 
+        uses: azure/aks-set-context@v1
         with:
-          java-version: 17
-          distribution: 'microsoft'
-          cache: gradle
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+          
 
-      - name: make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
-        env:
-          mongodb_host: localhost
-        run: ./gradlew build
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@master
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for registry
-        id: meta
-        uses: docker/metadata-action@master
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-      - name: push image to Container registry
-        uses: docker/build-push-action@master
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+      - name: Helm upgrade
+        run: helm upgrade --install release-name-demo helm-demo/ --set image.tag=latest --namespace demo-namespace --create-namespace --wait
+          
