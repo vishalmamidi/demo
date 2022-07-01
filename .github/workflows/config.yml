@@ -11,8 +11,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  cluster-name: demo-aks
-  resource-group: my_group
+  CLUSTER_NAME: demo-aks
+  CLUSTER_RESOURCE_GROUP: my_group
 
 jobs:
   build-and-push-image:
