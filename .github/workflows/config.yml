@@ -65,28 +65,28 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
 
 
-  deployment:
-    name: deployment
-    needs:
-      build-and-push-image:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+#   deployment:
+#     name: deployment
+#     needs:
+#       build-and-push-image:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       
-      - name: Set the target Azure Kubernetes Service (AKS) cluster. 
-        uses: azure/aks-set-context@v3
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+#       - name: Set the target Azure Kubernetes Service (AKS) cluster. 
+#         uses: azure/aks-set-context@v3
+#         with:
+#           creds: ${{ secrets.AZURE_CREDENTIALS }}
+#           cluster-name: ${{ env.CLUSTER_NAME }}
+#           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           
 
           
