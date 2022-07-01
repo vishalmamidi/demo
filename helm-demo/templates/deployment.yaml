@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helm-demo.fullname" . }}
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Values.service.namespace }}
   labels:
-    {{- include "helm-demo.labels" . | nindent 4 }}
+    app: {{ .Values.service.name }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "helm-demo.selectorLabels" . | nindent 6 }}
+      app: {{ .Values.service.name }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "helm-demo.selectorLabels" . | nindent 8 }}
+        app: {{ .Values.service.name }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -28,14 +29,14 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Values.image.name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.image.containerPort}}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -45,6 +46,10 @@ spec:
             httpGet:
               path: /
               port: http
+          env:
+          - name: MONGODB_URL
+            value: "localhost"
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

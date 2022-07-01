@@ -1,5 +1,28 @@
 # Run in local
 
+## Helm commands
+
+### install / upgrade release
+
+  ```
+  helm upgrade --install release-name-demo helm-demo/ --set image.tag=latest --namespace demo-namespace --create-namespace --wait
+  ```
+
+  ### uninstall release
+
+  ```
+  helm uninstall release-name-demo
+  ```
+
+  ### verify deployment
+
+  ```
+  kubectl rollout status deployment/demo -n demo-namespace
+  ```
+
+
+
+
 ## Run Azure CLI
 
 ```bash
