@@ -81,12 +81,12 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       
-#       - name: Set the target Azure Kubernetes Service (AKS) cluster. 
-#         uses: azure/aks-set-context@v3
-#         with:
-#           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#           cluster-name: ${{ env.CLUSTER_NAME }}
-#           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+      - name: Set the target Azure Kubernetes Service (AKS) cluster. 
+        uses: azure/aks-set-context@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           
 
           
