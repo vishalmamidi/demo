@@ -3,7 +3,7 @@ name: build and push image to github container registry
 
 on:
   push:
-    branches: [ azure-aks ]
+    branches: [ azure-aks2 ]
 
   #Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,45 +28,45 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Set up OpenJDK 17
-        uses: actions/setup-java@v3.4.0
-        with:
-          java-version: 17
-          distribution: 'microsoft'
-          cache: gradle
+#       - name: Set up OpenJDK 17
+#         uses: actions/setup-java@v3.4.0
+#         with:
+#           java-version: 17
+#           distribution: 'microsoft'
+#           cache: gradle
 
-      - name: make gradlew executable
-        run: chmod +x gradlew
+#       - name: make gradlew executable
+#         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        env:
-          mongodb_host: localhost
-        run: ./gradlew build
+#       - name: Build with Gradle
+#         env:
+#           mongodb_host: localhost
+#         run: ./gradlew build
 
-      - name: Extract metadata (tags, labels) for registry
-        id: meta
-        uses: docker/metadata-action@master
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-      - name: Log in to the Container registry
-        uses: docker/login-action@master
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Extract metadata (tags, labels) for registry
+#         id: meta
+#         uses: docker/metadata-action@master
+#         with:
+#           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#           tags: |
+#             type=raw,value=latest
+#       - name: Log in to the Container registry
+#         uses: docker/login-action@master
+#         with:
+#           registry: ${{ env.REGISTRY }}
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.0.0
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2.0.0
 
         
-      - name: push image to Container registry
-        uses: docker/build-push-action@master
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+#       - name: push image to Container registry
+#         uses: docker/build-push-action@master
+#         with:
+#           context: .
+#           push: true
+#           tags: ${{ steps.meta.outputs.tags }}
 
 
   deployment:
@@ -84,11 +84,18 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      
-      - name: Set the target Azure Kubernetes Service (AKS) cluster. 
-        uses: azure/aks-set-context@v1
+
+      - name: Azure Login
+        uses: Azure/login@v1.4.5
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+         client-id: ${{ secrets.AZURE_CLIENT_ID }}
+         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+      - name: Set the target Azure Kubernetes Service (AKS) cluster. 
+        uses: azure/aks-set-context@v3
+        with:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           
@@ -99,4 +106,12 @@ jobs:
 
       - name: Verify Deployment
         run: kubectl rollout status deployment/demo -n demo-namespace
-          
+
+
+      - name: Azure Logout
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az logout
+            az cache purge
+            az account clear
