@@ -15,7 +15,7 @@ env:
 jobs:
   build-jar:
     name: build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: read
       packages: write
