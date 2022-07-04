@@ -84,11 +84,15 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
+      - name: Azure Login
+        uses: Azure/login@v1.4.5
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
       
       - name: Set the target Azure Kubernetes Service (AKS) cluster. 
         uses: azure/aks-set-context@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           
