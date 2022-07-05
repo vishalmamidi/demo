@@ -101,7 +101,7 @@ jobs:
           
 
       - name: Deploy using Helm
-        run: helm upgrade --install release-name-demo helm-demo/ --set image.tag=latest --namespace demo-namespace --create-namespace --wait
+        run: helm upgrade --install release-name-demo helm-demo/ --set image.tag=0.${{ github.run_number }}.0 --namespace demo-namespace --create-namespace --wait
           
 
       - name: Verify Deployment
