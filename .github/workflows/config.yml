@@ -67,7 +67,7 @@ jobs:
       - name: Build and Push Image to Container Registry
         run: |
           echo "building container image"
-          docker build -t ${{ steps.meta.outputs.tags }}
+          docker build -t ${{ steps.meta.outputs.tags }} .
           echo "Pushing image to Container Registry"
           docker push ${{ steps.meta.outputs.tags }}
 
