@@ -14,7 +14,7 @@ Follow the steps to configure Azure Service Principal with a secret:
    az ad sp create-for-rbac --name "myApp" --role contributor \
                             --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group} \
                             --sdk-auth
-                            
+```
   # Replace {subscription-id}, {resource-group} with the subscription, resource group details
   # The command should output a JSON object similar to this:
  
@@ -60,3 +60,13 @@ az aks get-credentials --resource-group my_group --name demo-aks
 
 
 --------------------------------------------------------
+
+
+## 1: service principal 
+
+https://docs.microsoft.com/en-us/azure/aks/kubernetes-service-principal?tabs=azure-cli
+
+```
+az ad sp create-for-rbac --name myAKSClusterServicePrincipal
+```
+
