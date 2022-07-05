@@ -49,7 +49,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ github.run_number }}.0
+            type=raw,value=0.${{ github.run_number }}.0
 
 
       - name: Log in to the Container registry
