@@ -104,6 +104,8 @@ jobs:
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
       
       - uses: actions/setup-node@v3
+        with:
+          node-version: 14
       - uses: azure/setup-helm@v3
         
 #       - name: Deploy using Helm
