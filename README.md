@@ -79,3 +79,4 @@ or if you know container id
   ```shell
   sudo docker stop <container-id>
   ```
+## if using self - hosted runners do this <https://docs.docker.com/engine/install/linux-postinstall/>
