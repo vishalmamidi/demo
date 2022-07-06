@@ -122,7 +122,7 @@ jobs:
           
 
       - name: Deploy using Helm
-        run: helm upgrade --install release-name-demo helm-demo/ --set image.tag=${{ steps.meta.outputs.tags }} --namespace demo-namespace --create-namespace --wait
+        run: helm upgrade --install release-name-demo helm-demo/ --set image.tag=0.${{ github.RUN_NUMBER }}.${{ github.RUN_ATTEMPT }}.0.${{ github.ACTION }} --namespace demo-namespace --create-namespace --wait
           
 
       - name: Verify Deployment
