@@ -1,5 +1,9 @@
 FROM openjdk:17-jdk-alpine
 
+ARG DESCRIPTION=""
+
+LABEL org.opencontainers.image.description $DESCRIPTION
+
 EXPOSE 8080
 
 WORKDIR /app
