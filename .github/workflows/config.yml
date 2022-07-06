@@ -19,7 +19,9 @@ jobs:
   build-and-push-image:
     name: build
     runs-on: self-hosted
-    permissions: write-all
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout repository

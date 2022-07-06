@@ -20,6 +20,10 @@
   helm history demo --namespace demo-namespace
   ```
 
+  ```shell
+  helm list --all-namespaces
+  ```
+
   ### rollback to old releases
 
   ```shell
