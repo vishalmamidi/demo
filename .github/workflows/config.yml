@@ -67,13 +67,6 @@ jobs:
         uses: docker/setup-buildx-action@v2.0.0
 
 
-      # - name: Build and Push Image to Container Registry
-      #   run: |
-      #     echo "building container image"
-      #     docker build -t ${{ steps.meta.outputs.tags }} --build-arg DESCRIPTION=${{ github.workflow }} .
-      #     echo "Pushing image to Container Registry"
-      #     docker push ${{ steps.meta.outputs.tags }}
-
       - name: Build and Push Image to Container Registry
         uses: docker/build-push-action@v3
         with:
@@ -96,6 +89,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Azure CLI Action
+        uses: Azure/cli@v1
 
       - name: Azure Login
         uses: Azure/login@v1.4.5
