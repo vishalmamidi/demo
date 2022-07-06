@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk-alpine
 
-ARG DESCRIPTION="Demo Microservice image"
+ARG DESCRIPTION=""
 
 LABEL org.opencontainers.image.description $DESCRIPTION
 
