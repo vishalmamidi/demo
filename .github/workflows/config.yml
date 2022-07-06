@@ -103,7 +103,7 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           
-      - uses: azure/setup-helm@v1
+#       - uses: azure/setup-helm@v1
 
 #       - name: Deploy using Helm
 #         run: helm upgrade --install demo helm-demo/ --set image.tag=${{ env.IMG_TAG }} --namespace demo-namespace --create-namespace --wait
