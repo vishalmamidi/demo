@@ -52,7 +52,7 @@ jobs:
           tags: |
             type=raw,value=${{ env.IMG_TAG }}
           labels: |
-            org.opencontainers.image.description=Another description
+            org.opencontainers.image.description=${{ github.event.head_commit.message }}
 
 
       - name: Log in to the Container registry
