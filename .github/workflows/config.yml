@@ -103,7 +103,9 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
           
-      - uses: azure/setup-helm@v3
+      - uses: azure/setup-helm@v1
+        with:
+          version: v3.9.0
         id: install
 
 #       - name: Deploy using Helm
