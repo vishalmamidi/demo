@@ -62,7 +62,6 @@ jobs:
             org.opencontainers.image.description="${{ github.event.head_commit.message }}"
 
 
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.0.0
 
@@ -90,8 +89,14 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Azure CLI Action
-        uses: Azure/cli@v1
+      - name: Install Azure cli
+        run: |
+          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+          AZ_REPO=$(lsb_release -cs)
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+          sudo apt-get update
+          sudo apt-get install azure-cli
 
       - name: Azure Login
         uses: Azure/login@v1.4.5
