@@ -107,7 +107,8 @@ jobs:
         with:
           node-version: 14
       - uses: azure/setup-helm@v3
-        
+      - uses: Azure/setup-kubectl@v3
+      
 #       - name: Deploy using Helm
 #         run: helm upgrade --install demo helm-demo/ --set image.tag=${{ env.IMG_TAG }} --namespace demo-namespace --create-namespace --wait
           
