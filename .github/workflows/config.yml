@@ -93,6 +93,7 @@ jobs:
         with:
           node-version: 14
       - uses: azure/setup-helm@v3
+      - run: sudo apt install unzip
       - uses: Azure/setup-kubectl@v3
       # above only needed if they are not installed in self hosted runners.
 
