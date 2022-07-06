@@ -59,19 +59,19 @@
 
 ## run container image
 
-```shell
-sudo docker run -p 8080:8080 vishalmamidi/demo
-```
+  ```shell
+  sudo docker run -p 8080:8080 vishalmamidi/demo
+  ```
 
 ## check and stop container
 
 
-```shell
-sudo docker stop $(sudo docker ps -q --filter ancestor=vishalmamidi/demo-rest )
-```
+  ```shell
+  sudo docker stop $(sudo docker ps -q --filter ancestor=vishalmamidi/demo-rest )
+  ```
 
 or if you know container id
 
-```shell
-sudo docker stop <container-id>
-```
+  ```shell
+  sudo docker stop <container-id>
+  ```
