@@ -65,19 +65,19 @@ jobs:
         uses: docker/setup-buildx-action@v2.0.0
 
 
-      # - name: Build and Push Image to Container Registry
-      #   run: |
-      #     echo "building container image"
-      #     docker build -t ${{ steps.meta.outputs.tags }} .
-      #     echo "Pushing image to Container Registry"
-      #     docker push ${{ steps.meta.outputs.tags }}
-
       - name: Build and Push Image to Container Registry
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+        run: |
+          echo "building container image"
+          docker build -t ${{ steps.meta.outputs.tags }} --build-arg DESCRIPTION= ${{ github.job }} .
+          echo "Pushing image to Container Registry"
+          docker push ${{ steps.meta.outputs.tags }}
+
+      # - name: Build and Push Image to Container Registry
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
 
 
   deployment:

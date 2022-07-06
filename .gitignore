@@ -39,3 +39,8 @@ out/
 .gradle/7.3.3/dependencies-accessors/dependencies-accessors.lock
 .gradle/7.3.3/checksums/checksums.lock
 .gradle/7.3.3/gc.properties
+
+### Gradle ###
+/build/
+/var/
+/.gradle/
