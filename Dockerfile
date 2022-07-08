@@ -1,4 +1,4 @@
-FROM ghcr.io/graalvm/graalvm-ce:latest
+FROM openjdk:17-jdk-alpine
 
 ARG DESCRIPTION=""
 
