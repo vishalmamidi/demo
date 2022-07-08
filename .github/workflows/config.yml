@@ -3,7 +3,7 @@ name: build and push image to github container registry
 
 on:
   push:
-    branches: [ azure-aks ]
+    branches: [ main ]
 
   #Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
