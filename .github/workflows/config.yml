@@ -1,6 +1,6 @@
 # This workflow will build a Java project with Gradle and push to GitHub container registry ..  
 name: build and push image to github container registry
-  
+
 on:
   push:
     branches: [ main ]
@@ -11,14 +11,15 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  CLUSTER_NAME: demo-aks
   CLUSTER_RESOURCE_GROUP: my_group
-  IMG_TAG: 0.${{ github.RUN_NUMBER }}.0
+  CLUSTER_NAME: demo-aks
+  CLUSTER_NAMESPACE: demo-namespace
+  IMAGE_TAG: 0.${{ github.RUN_NUMBER }}.0
 
 jobs:
   build-and-push-image:
     name: build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -36,21 +37,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-#       - name: Set up OpenJDK 17
-#         uses: actions/setup-java@v3.4.0
-#         with:
-#           java-version: 17
-#           distribution: 'microsoft'
-#           cache: gradle
-
-      - uses: graalvm/setup-graalvm@v1
+      - name: Setup Java 17 (GraalVM)
+        uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/cache@v3
+      - name: Cache Gradle
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
@@ -58,17 +54,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
-      - name: Example step
-        run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          gu --version
-          native-image --version
-
-
-      - name: make gradlew executable
+      - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Build with Gradle
@@ -82,10 +68,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ env.IMG_TAG }}
+            type=raw,value=${{ env.IMAGE_TAG }}
+            type=raw,value=latest
           labels: |
             org.opencontainers.image.description="${{ github.event.head_commit.message }}"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.0.0
 
@@ -97,44 +83,47 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+
   deployment:
     name: deployment
     needs:
       - build-and-push-image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
-      packages: write
+      contents: read
+      packages: read
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      
+
       # below only needed if they are not installed in self hosted runners  
-      - uses: elstudio/action-install-azure-cli@v1
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 14
-      - uses: azure/setup-helm@v3
-      - run: sudo apt install unzip
-      - uses: Azure/setup-kubectl@v3
+      # - uses: elstudio/action-install-azure-cli@v1
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 14
+      # - uses: azure/setup-helm@v3
+      # - run: sudo apt-get install unzip
+      # - uses: Azure/setup-kubectl@v3
       # above only needed if they are not installed in self hosted runners.
 
       - name: Azure Login
         uses: Azure/login@v1.4.5
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-      - name: Set the target Azure Kubernetes Service (AKS) cluster. 
-        uses: azure/aks-set-context@v2
-        with:
-          cluster-name: ${{ env.CLUSTER_NAME }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-      
+
+      # add "--public-fqdn" if private cluster
+      - name: Set the target Azure Kubernetes Service (AKS) cluster.
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} \
+            --name ${{ env.CLUSTER_NAME }} --overwrite-existing
       - name: Deploy using Helm
-        run: helm upgrade --install demo helm-demo/ --set image.tag=${{ env.IMG_TAG }} --namespace demo-namespace --create-namespace --wait
-                 
+        run: | 
+          helm upgrade \
+            --install ${{ github.event.repository.name }} helm-${{ github.event.repository.name }}/  \
+            --set image.tag=${{ env.IMAGE_TAG }} --namespace ${{ env.CLUSTER_NAMESPACE }} --create-namespace --wait
       - name: Verify Deployment
-        run: kubectl rollout status deployment/demo -n demo-namespace
+        run: kubectl rollout status deployment/${{ github.event.repository.name }} -n ${{ env.CLUSTER_NAMESPACE }}
