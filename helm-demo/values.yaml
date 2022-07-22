@@ -42,7 +42,6 @@ service:
   type: LoadBalancer
   port: 8080
   name: demo
-  namespace: demo-namespace
 
 ingress:
   enabled: true
