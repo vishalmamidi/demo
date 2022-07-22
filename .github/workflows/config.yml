@@ -1,5 +1,4 @@
-# This workflow will build a Java project with Gradle and push to GitHub container registry ..  
-name: build and push image to github container registry
+name: build and deploy
 
 on:
   push:
@@ -8,122 +7,14 @@ on:
   #Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  CLUSTER_RESOURCE_GROUP: my_group
-  CLUSTER_NAME: demo-aks
-  CLUSTER_NAMESPACE: demo-namespace
-  IMAGE_TAG: 0.${{ github.RUN_NUMBER }}.0
-
 jobs:
-  build-and-push-image:
-    name: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+  reusable-build:
+    name: "reusable"
+    uses: vishalmamidi/workflows/.github/workflows/gradle-build.yaml@main
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Java 17 (GraalVM)
-        uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache Gradle
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
-        env:
-          mongodb_host: localhost
-        run: ./gradlew build
-
-      - name: Extract metadata (tags, labels) for registry
-        id: meta
-        uses: docker/metadata-action@master
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=${{ env.IMAGE_TAG }}
-            type=raw,value=latest
-          labels: |
-            org.opencontainers.image.description="${{ github.event.head_commit.message }}"
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.0.0
-
-      - name: Build and Push Image to Container Registry
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-
-  deployment:
-    name: deployment
+  reusable-deploy:
     needs:
-      - build-and-push-image
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
-      # below only needed if they are not installed in self hosted runners  
-      # - uses: elstudio/action-install-azure-cli@v1
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 14
-      # - uses: azure/setup-helm@v3
-      # - run: sudo apt-get install unzip
-      # - uses: Azure/setup-kubectl@v3
-      # above only needed if they are not installed in self hosted runners.
-
-      - name: Azure Login
-        uses: Azure/login@v1.4.5
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # add "--public-fqdn" if private cluster
-      - name: Set the target Azure Kubernetes Service (AKS) cluster.
-        run: |
-          az aks get-credentials \
-            --resource-group ${{ env.CLUSTER_RESOURCE_GROUP }} \
-            --name ${{ env.CLUSTER_NAME }} --overwrite-existing
-      - name: Deploy using Helm
-        run: | 
-          helm upgrade \
-            --install ${{ github.event.repository.name }} helm-${{ github.event.repository.name }}/  \
-            --set image.tag=${{ env.IMAGE_TAG }} --namespace ${{ env.CLUSTER_NAMESPACE }} --create-namespace --wait
-      - name: Verify Deployment
-        run: kubectl rollout status deployment/${{ github.event.repository.name }} -n ${{ env.CLUSTER_NAMESPACE }}
+      reusable-build
+    name: "reusable"
+    uses: vishalmamidi/workflows/.github/workflows/aks-deploy.yaml@main
+    secrets: inherit
