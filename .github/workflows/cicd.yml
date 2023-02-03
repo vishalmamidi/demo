@@ -10,7 +10,7 @@ on:
 jobs:
   reusable-build:
     name: "🛠️"
-    uses: vishalmamidi/workflows/.github/workflows/gradle-build.yaml@main
+    uses: vishalmamidi/workflows/.github/workflows/build-gradle.yaml@main
     secrets: inherit
 
 
