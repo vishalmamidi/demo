@@ -9,12 +9,14 @@ on:
 
 jobs:
   reusable-build:
-    name: "reusable"
+    name: "🛠️"
     uses: vishalmamidi/workflows/.github/workflows/gradle-build.yaml@main
+    secrets: inherit
+
 
   reusable-deploy:
     needs:
       reusable-build
-    name: "reusable"
+    name: "🚀"
     uses: vishalmamidi/workflows/.github/workflows/aks-deploy.yaml@main
     secrets: inherit
