@@ -14,9 +14,9 @@ jobs:
     secrets: inherit
 
 
-  reusable-deploy:
-    needs:
-      reusable-build
-    name: "🚀"
-    uses: vishalmamidi/workflows/.github/workflows/aks-deploy.yaml@main
-    secrets: inherit
+  # reusable-deploy:
+  #   needs:
+  #     reusable-build
+  #   name: "🚀"
+  #   uses: vishalmamidi/workflows/.github/workflows/deploy-aks.yaml@main
+  #   secrets: inherit
