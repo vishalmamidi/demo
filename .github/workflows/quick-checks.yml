@@ -1,0 +1,18 @@
+# quick checks for pull request
+
+name: quick checks
+
+on:
+  pull_request:
+    branches: [ "update-your-main-branch-here" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  quick-checks-unit:
+    name: 🚨
+    permissions:
+      contents: read
+    uses: vishalmamidi/workflows/.github/workflows/quick-checks-gradle.yml@main
+    secrets: inherit
