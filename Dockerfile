@@ -1,4 +1,4 @@
-FROM bitnami/java:17
+FROM bitnami/java:22
 
 ARG DESCRIPTION=""
 
