@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine
+FROM bitnami/java:17
 
 ARG DESCRIPTION=""
 
